@@ -1,6 +1,6 @@
-================
-Kuna API wrapper
-================
+=========================
+Kuna exchange API wrapper
+=========================
 
 
 .. image:: https://img.shields.io/pypi/v/kuna.svg
@@ -8,6 +8,9 @@ Kuna API wrapper
 
 .. image:: https://travis-ci.org/DmytroLitvinov/kuna.svg?branch=master
         :target: https://travis-ci.org/DmytroLitvinov/kuna
+
+.. image:: https://coveralls.io/repos/github/DmytroLitvinov/kuna/badge.svg?branch=master
+        :target: https://coveralls.io/github/DmytroLitvinov/kuna?branch=master
 
 .. image:: https://readthedocs.org/projects/kuna/badge/?version=stable
         :target: https://kuna.readthedocs.io/en/latest/?badge=stable
@@ -21,23 +24,30 @@ Kuna API wrapper
      :target: https://pyup.io/repos/github/DmytroLitvinov/kuna/
      :alt: Python 3
 
-Interact with Kuna exchange API
+``kuna`` is a Python package providing access to the `Kuna exchange <https://kuna.io/>`_ server API.
+Original documentation of Kuna exchange API here: https://kuna.io/documents/api
 
 
 * Free software: MIT license
 * Documentation: https://kuna.readthedocs.io.
 
 
-Features
---------
+Installation
+------------
+
+``pip install kuna``
+
+Usage example
+-------------
 
 * TODO
 
-Credits
----------
+Meta
+----
 
-This package was created with Cookiecutter_ and the `audreyr/cookiecutter-pypackage`_ project template.
+Dmytro Litvinov – `@Dmytro_Litvinov <https://twitter.com/Dmytro_Litvinov>`_  – litvinov.do.it@gmail.com
 
-.. _Cookiecutter: https://github.com/audreyr/cookiecutter
-.. _`audreyr/cookiecutter-pypackage`: https://github.com/audreyr/cookiecutter-pypackage
+Distributed under the MIT license. See `LICENSE <https://github.com/DmytroLitvinov/kuna/blob/master/LICENSE>`_ for more information.
+
+https://github.com/DmytroLitvinov/kuna
 
