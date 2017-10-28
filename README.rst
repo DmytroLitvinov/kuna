@@ -6,11 +6,11 @@ Kuna API wrapper
 .. image:: https://img.shields.io/pypi/v/kuna.svg
         :target: https://pypi.python.org/pypi/kuna
 
-.. image:: https://img.shields.io/travis/DmytroLitvinov/kuna.svg
+.. image:: https://travis-ci.org/DmytroLitvinov/kuna.svg?branch=master
         :target: https://travis-ci.org/DmytroLitvinov/kuna
 
-.. image:: https://readthedocs.org/projects/kuna/badge/?version=latest
-        :target: https://kuna.readthedocs.io/en/latest/?badge=latest
+.. image:: https://readthedocs.org/projects/kuna/badge/?version=stable
+        :target: https://kuna.readthedocs.io/en/latest/?badge=stable
         :alt: Documentation Status
 
 .. image:: https://pyup.io/repos/github/DmytroLitvinov/kuna/shield.svg
