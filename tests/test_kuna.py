@@ -32,3 +32,15 @@ class TestKuna(unittest.TestCase):
         help_result = runner.invoke(cli.main, ['--help'])
         assert help_result.exit_code == 0
         assert '--help  Show this message and exit.' in help_result.output
+
+    def test_get_server_time(self):
+        pass
+
+    def test_get_recent_market_data(self):
+        pass
+
+    def test_get_order_book(self):
+        pass
+
+    def test_get_trades_history(self):
+        pass
