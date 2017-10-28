@@ -17,6 +17,9 @@ Kuna API wrapper
      :target: https://pyup.io/repos/github/DmytroLitvinov/kuna/
      :alt: Updates
 
+.. image:: https://pyup.io/repos/github/DmytroLitvinov/kuna/python-3-shield.svg
+     :target: https://pyup.io/repos/github/DmytroLitvinov/kuna/
+     :alt: Python 3
 
 Interact with Kuna exchange API
 
