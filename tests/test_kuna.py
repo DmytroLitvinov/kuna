@@ -7,7 +7,6 @@
 import unittest
 from click.testing import CliRunner
 
-from kuna import kuna
 from kuna import cli
 
 
