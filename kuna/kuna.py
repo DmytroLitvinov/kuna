@@ -40,6 +40,7 @@ class KunaAPI(object):
         """
         if market not in VALID_MARKET_DATA_PAIRS:
             raise APIError('Enter a valid market pair')
+
         return self.request('{}/{}'.format('tickers', market))
 
     def get_order_book(self, market):
@@ -126,7 +127,7 @@ class KunaAPI(object):
     def get_trade_history(self, market):
         """
         User trade history
-        This is a user method.
+        This is a User method.
         :param market:
         :return:
         """
