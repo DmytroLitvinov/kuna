@@ -1,4 +1,3 @@
-=========================
 Kuna exchange API wrapper
 =========================
 
@@ -28,22 +27,36 @@ Kuna exchange API wrapper
 Original documentation of Kuna exchange API here: https://kuna.io/documents/api
 
 
-* Free software: MIT license
-* Documentation: https://kuna.readthedocs.io.
-
-
 Installation
+============
+
+Requirements
 ------------
 
-``pip install kuna``
+kuna depends on:
+
+* `python-requests <http://docs.python-requests.org/en/latest/>`_
+
+Install with pip
+----------------
+
+.. code-block:: console
+
+   pip install kuna
+
 
 Usage example
--------------
+=============
 
 * TODO
 
+Documentation
+=============
+
+The full documentation forAPI is available on `readthedocs <https://kuna.readthedocs.io>`_.
+
 Meta
-----
+====
 
 Dmytro Litvinov – `@Dmytro_Litvinov <https://twitter.com/Dmytro_Litvinov>`_  – litvinov.do.it@gmail.com
 
