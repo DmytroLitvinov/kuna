@@ -8,9 +8,6 @@ Kuna exchange API wrapper
 .. image:: https://travis-ci.org/DmytroLitvinov/kuna.svg?branch=master
         :target: https://travis-ci.org/DmytroLitvinov/kuna
 
-.. image:: https://coveralls.io/repos/github/DmytroLitvinov/kuna/badge.svg?branch=master
-        :target: https://coveralls.io/github/DmytroLitvinov/kuna?branch=master
-
 .. image:: https://readthedocs.org/projects/kuna/badge/?version=stable
         :target: https://kuna.readthedocs.io/en/latest/?badge=stable
         :alt: Documentation Status
