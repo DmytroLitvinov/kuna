@@ -1,7 +1,7 @@
 deploy:
   distributions: sdist bdist_wheel
   provider: pypi
-  on:
+  true:
     python: 2.7
     repo: DmytroLitvinov/kuna
     tags: true
