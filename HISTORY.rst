@@ -2,6 +2,14 @@ History
 =======
 
 
+0.2.2 (2017-10-31)
+------------------
+
+* Speed up code by change string concatenation
+* Improve docs structure
+* Minor change at code login for getting signature
+
+
 0.2.1 (2017-10-29)
 ------------------
 
