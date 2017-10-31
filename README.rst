@@ -42,15 +42,10 @@ Install with pip
    pip install kuna
 
 
-Usage example
-=============
-
-* TODO
-
 Documentation
 =============
 
-The full documentation forAPI is available on `readthedocs <https://kuna.readthedocs.io>`_.
+The full documentation is available on `readthedocs <https://kuna.readthedocs.io>`_.
 
 Meta
 ====
