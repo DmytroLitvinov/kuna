@@ -7,7 +7,7 @@ History
 
 * Speed up code by change string concatenation
 * Improve docs structure
-* Minor change at code login for getting signature
+* Minor change at code logic for getting signature
 
 
 0.2.1 (2017-10-29)
