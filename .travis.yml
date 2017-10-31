@@ -3,7 +3,7 @@ deploy:
   provider: pypi
   user: DmytroLitvinov
   password:
-    secure: !!binary |
+    secure:
       WTUyeHVEd3VzWTVDZ1VUNFExYTdKejVIM2NBa0hGRUVxRkUwUGF1VUthU3NBQW92bHBKcjAwTWNw
       dElmczF3UitzeXNqTHlpbEpLdGtkaFdveDNrY0F2SWNVZW5YT2g1OTBnSGJMSWRVVUpRN3pWMlhF
       SWxCMy9OU2Z6YllQMW9YVjhodlRFTWt2SzNmYXFTUjJBVlFLOGQrc2NrVC96Qm1BOXdBam4xSlhm
