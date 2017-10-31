@@ -8,9 +8,6 @@ Kuna exchange API wrapper
 .. image:: https://travis-ci.org/DmytroLitvinov/kuna.svg?branch=master
         :target: https://travis-ci.org/DmytroLitvinov/kuna
 
-.. image:: https://coveralls.io/repos/github/DmytroLitvinov/kuna/badge.svg?branch=master
-        :target: https://coveralls.io/github/DmytroLitvinov/kuna?branch=master
-
 .. image:: https://readthedocs.org/projects/kuna/badge/?version=stable
         :target: https://kuna.readthedocs.io/en/latest/?badge=stable
         :alt: Documentation Status
@@ -45,15 +42,10 @@ Install with pip
    pip install kuna
 
 
-Usage example
-=============
-
-* TODO
-
 Documentation
 =============
 
-The full documentation forAPI is available on `readthedocs <https://kuna.readthedocs.io>`_.
+The full documentation is available on `readthedocs <https://kuna.readthedocs.io>`_.
 
 Meta
 ====

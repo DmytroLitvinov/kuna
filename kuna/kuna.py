@@ -6,6 +6,7 @@ import hmac
 import json
 
 import requests
+import time
 
 try:
     from urllib.parse import urlencode
@@ -41,7 +42,7 @@ class KunaAPI(object):
         if market not in VALID_MARKET_DATA_PAIRS:
             raise APIError('Enter a valid market pair')
 
-        return self.request('{}/{}'.format('tickers', market))
+        return self.request('tickers' + '/' + market)
 
     def get_order_book(self, market):
         """
@@ -55,7 +56,7 @@ class KunaAPI(object):
         args = {
             'market': market
         }
-        return self.request('{}'.format('order_book'), args=args)
+        return self.request('order_book', args=args)
 
     def get_trades_history(self, market):
         """
@@ -69,7 +70,7 @@ class KunaAPI(object):
         args = {
             'market': market
         }
-        return self.request('{}'.format('trades'), args=args)
+        return self.request('trades', args=args)
 
     def get_user_account_info(self):
         """
@@ -77,7 +78,7 @@ class KunaAPI(object):
         This is a User method.
         :return:
         """
-        return self.request('{}'.format('members/me'), is_user_method=True)
+        return self.request('members/me', is_user_method=True)
 
     def get_orders(self, market):
         """
@@ -90,7 +91,7 @@ class KunaAPI(object):
         args = {
             'market': market
         }
-        return self.request('{}'.format('orders'), args=args, is_user_method=True)
+        return self.request('orders', args=args, is_user_method=True)
 
     def put_order(self, side, volume, market, price):
         """
@@ -110,7 +111,7 @@ class KunaAPI(object):
             'market': market,
             'price': price
         }
-        return self.request('{}'.format('orders'), args=args, method='POST', is_user_method=True)
+        return self.request('orders', args=args, method='POST', is_user_method=True)
 
     def cancel_order(self, order_id):
         """
@@ -122,7 +123,7 @@ class KunaAPI(object):
         args = {
             'id': order_id
         }
-        return self.request('{}'.format('order/delete'), args=args, method='POST', is_user_method=True)
+        return self.request('order/delete', args=args, method='POST', is_user_method=True)
 
     def get_trade_history(self, market):
         """
@@ -137,7 +138,7 @@ class KunaAPI(object):
         args = {
             'market': market
         }
-        return self.request('{}'.format('trades/my'), args=args, is_user_method=True)
+        return self.request('trades/my', args=args, is_user_method=True)
 
     def request(self, path, args=None, method='GET', is_user_method=False):
         """
@@ -155,13 +156,9 @@ class KunaAPI(object):
             args = dict()
 
         if is_user_method:
-            args_for_signature = [method, path, args]
-            user_method_args = {
-                'access_key': self.access_key,
-                'tonce': self.get_server_time() * 1000,
-                'signature': self._generate_signature(*args_for_signature)
-            }
-            args.update(user_method_args)
+            args['access_key'] = self.access_key
+            args['tonce'] = int(time.time()) * 1000
+            args['signature'] = self._generate_signature(method, path, args)
 
         try:
             response = requests.request(
@@ -188,15 +185,8 @@ class KunaAPI(object):
         :param args:
         :return:
         """
-        params = {
-            'access_key': self.access_key,
-            'tonce': self.get_server_time() * 1000
-        }
-        params.update(args)
-        urlencoded_params = urlencode(params)
-
-        uri = '/{}/{}'.format(KUNA_API_URL_PREFIX, path)
-        msg = '{}|{}|{}'.format(method, uri, urlencoded_params)  # "HTTP-verb|URI|params"
+        uri = '/' + KUNA_API_URL_PREFIX + '/' + path
+        msg = method + '|' + uri + '|' + urlencode(args)  # "HTTP-verb|URI|params"
 
         # HMAC can only handle ascii (byte) strings
         # https://bugs.python.org/issue5285
