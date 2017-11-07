@@ -2,6 +2,12 @@ History
 =======
 
 
+0.2.4 (2017-11-07)
+------------------
+
+* Fix bug for User method: for correct generate signature it needs to pass assorted params.
+
+
 0.2.3 (2017-10-31)
 ------------------
 

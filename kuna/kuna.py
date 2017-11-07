@@ -186,7 +186,8 @@ class KunaAPI(object):
         :return:
         """
         uri = '/' + KUNA_API_URL_PREFIX + '/' + path
-        msg = method + '|' + uri + '|' + urlencode(args)  # "HTTP-verb|URI|params"
+        sorted_values = sorted(args.items(), key=lambda val: val[0])
+        msg = method + '|' + uri + '|' + urlencode(sorted_values)  # "HTTP-verb|URI|params"
 
         # HMAC can only handle ascii (byte) strings
         # https://bugs.python.org/issue5285
