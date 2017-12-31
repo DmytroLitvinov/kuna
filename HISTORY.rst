@@ -2,6 +2,12 @@ History
 =======
 
 
+0.2.5 (2017-12-31)
+------------------
+
+* Fix market pair 'golosgbg' to 'golgbg' and also add new pairs 'rbtc', 'arnbtc', 'evrbtc', 'b2bbtc'
+
+
 0.2.4 (2017-11-07)
 ------------------
 
