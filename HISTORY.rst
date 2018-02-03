@@ -5,7 +5,7 @@ History
 0.2.6 (2018-01-06)
 ------------------
 
-*Add new pair 'bchuah'
+* Add new pair 'bchuah'
 
 
 0.2.5 (2017-12-31)
