@@ -5,7 +5,7 @@ History
 0.2.7 (2018-02-09)
 ------------------
 
-* Add new pair XPR/UAH 'xrpuah'
+* Add new pair XRP/UAH 'xrpuah'
 
 
 0.2.6 (2018-01-06)
