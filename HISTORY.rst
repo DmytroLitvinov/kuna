@@ -2,10 +2,16 @@ History
 =======
 
 
+0.2.7 (2018-02-09)
+------------------
+
+* Add new pair XPR/UAH 'xrpuah'
+
+
 0.2.6 (2018-01-06)
 ------------------
 
-* Add new pair 'bchuah'
+* Add new pair BCH/UAH 'bchuah'
 
 
 0.2.5 (2017-12-31)
