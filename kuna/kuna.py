@@ -18,7 +18,7 @@ KUNA_API_URL_PREFIX = 'api/v{}'.format(API_VERSION)
 KUNA_API_BASEURL = 'https://kuna.io/{}/'.format(KUNA_API_URL_PREFIX)
 
 VALID_MARKET_DATA_PAIRS = ['btcuah', 'ethuah', 'wavesuah', 'gbguah', 'golgbg', 'kunbtc', 'bchbtc', 'rmcbtc',
-                           'rbtc', 'arnbtc', 'evrbtc', 'b2bbtc', 'bchuah', 'xrpuah']
+                           'rbtc', 'arnbtc', 'evrbtc', 'b2bbtc', 'bchuah', 'xrpuah', 'eosbtc', 'foodbtc', 'otxbtc']
 
 
 class KunaAPI(object):
@@ -174,7 +174,7 @@ class KunaAPI(object):
 
         if result and isinstance(result, dict) and result.get('error'):
             raise APIError(result)
-        elif not response.status_code == requests.codes.ok:
+        elif response.status_code not in [200, 201, 202]:
             raise APIError(response.reason)
         return result
 

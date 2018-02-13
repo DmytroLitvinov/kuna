@@ -2,6 +2,12 @@ History
 =======
 
 
+0.2.8 (2018-02-13)
+------------------
+
+* Add new pairs EOS/BTC 'eosbtc', FOOD/BTC 'foodbtc', OTX/BTC 'otxbtc'
+
+
 0.2.7 (2018-02-09)
 ------------------
 
