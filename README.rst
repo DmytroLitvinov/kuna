@@ -56,3 +56,8 @@ Distributed under the MIT license. See `LICENSE <https://github.com/DmytroLitvin
 
 https://github.com/DmytroLitvinov/kuna
 
+Deploy
+======
+
+https://cookiecutter-pypackage.readthedocs.io/en/latest/pypi_release_checklist.html
+
