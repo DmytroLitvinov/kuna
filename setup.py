@@ -26,7 +26,7 @@ test_requirements = [
 
 setup(
     name='kuna',
-    version='0.2.8',
+    version='0.2.9',
     description="Interact with Kuna exchange API",
     long_description=readme + '\n\n' + history,
     author="Dmytro Litvinov",
