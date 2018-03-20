@@ -17,9 +17,9 @@ API_VERSION = '2'
 KUNA_API_URL_PREFIX = 'api/v{}'.format(API_VERSION)
 KUNA_API_BASEURL = 'https://kuna.io/{}/'.format(KUNA_API_URL_PREFIX)
 
-VALID_MARKET_DATA_PAIRS = ['btcuah', 'ethuah', 'wavesuah', 'gbguah', 'golgbg', 'kunbtc', 'bchbtc', 'rmcbtc',
-                           'rbtc', 'arnbtc', 'evrbtc', 'b2bbtc', 'bchuah', 'xrpuah', 'eosbtc', 'foodbtc', 'otxbtc'
-                           'hknbtc', 'xlmuah', 'tusduah']
+VALID_MARKET_DATA_PAIRS = ['btcuah', 'ethuah', 'wavesuah', 'gbguah', 'eosbtc', 'bchuah', 'xrpuah', 'xlmuah', 'tusduah',
+                           'golgbg', 'bchbtc', 'kunbtc', 'rmcbtc', 'rbtc', 'arnbtc', 'evrbtc', 'b2bbtc',
+                           'foodbtc', 'otxbtc', 'hknbtc']
 
 
 class KunaAPI(object):
