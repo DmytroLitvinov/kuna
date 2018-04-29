@@ -17,9 +17,11 @@ API_VERSION = '2'
 KUNA_API_URL_PREFIX = 'api/v{}'.format(API_VERSION)
 KUNA_API_BASEURL = 'https://kuna.io/{}/'.format(KUNA_API_URL_PREFIX)
 
-VALID_MARKET_DATA_PAIRS = ['btcuah', 'ethuah', 'wavesuah', 'gbguah', 'eosuah', 'bchuah', 'xrpuah', 'xlmuah', 'tusduah',
-                           'golgbg', 'bchbtc', 'kunbtc', 'rmcbtc', 'rbtc', 'arnbtc', 'evrbtc', 'b2bbtc',
-                           'foodbtc', 'hknbtc']
+MARKET_PAIRS_TO_GRYVNA = ['btcuah', 'ethuah', 'xrpuah', 'ltcuah', 'dashuah', 'bchuah', 'xlmuah', 'gbguah',
+                          'eosuah', 'tusduah', 'wavesuah']
+
+VALID_MARKET_DATA_PAIRS = ['kunbtc', 'bchbtc', 'golgbg', 'rmcbtc', 'rbtc', 'evrbtc', 'foodbtc', 'hknbtc'] + \
+                          MARKET_PAIRS_TO_GRYVNA
 
 
 class KunaAPI(object):
@@ -41,9 +43,6 @@ class KunaAPI(object):
         :param market:
         :return:
         """
-        if market not in VALID_MARKET_DATA_PAIRS:
-            raise APIError('Enter a valid market pair')
-
         return self.request('tickers' + '/' + market)
 
     def get_order_book(self, market):
@@ -52,9 +51,6 @@ class KunaAPI(object):
         :param market:
         :return:
         """
-        if market not in VALID_MARKET_DATA_PAIRS:
-            raise APIError('Enter a valid market pair')
-
         args = {
             'market': market
         }
@@ -66,9 +62,6 @@ class KunaAPI(object):
         :param market:
         :return:
         """
-        if market not in VALID_MARKET_DATA_PAIRS:
-            raise APIError('Enter a valid market pair')
-
         args = {
             'market': market
         }
@@ -88,8 +81,6 @@ class KunaAPI(object):
         This is a User method.
         :return:
         """
-        if market not in VALID_MARKET_DATA_PAIRS:
-            raise APIError('Enter a valid market pair')
         args = {
             'market': market
         }
@@ -105,8 +96,6 @@ class KunaAPI(object):
         :param price: price for 1 BTC
         :return:
         """
-        if market not in VALID_MARKET_DATA_PAIRS:
-            raise APIError('Enter a valid market pair')
         args = {
             'side': side,
             'volume': volume,
@@ -134,9 +123,6 @@ class KunaAPI(object):
         :param market:
         :return:
         """
-        if market not in VALID_MARKET_DATA_PAIRS:
-            raise APIError('Enter a valid market pair')
-
         args = {
             'market': market
         }
