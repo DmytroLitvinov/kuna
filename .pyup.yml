@@ -1,0 +1,17 @@
+# see https://pyup.io/docs/configuration/ for all available options
+
+# update schedule
+schedule: "every week"
+
+# Specify requirement files by hand, default is empty
+requirements:
+  - requirements-dev.txt
+
+# add a label to pull requests, default is not set
+label_prs: update
+
+# assign users to pull requests
+assignees: DmytroLitvinov
+
+# configure the branch prefix the bot is using
+branch_prefix: pyup/
