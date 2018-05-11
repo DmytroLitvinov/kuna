@@ -145,7 +145,7 @@ class KunaAPI(object):
 
         if is_user_method:
             args['access_key'] = self.access_key
-            args['tonce'] = int(time.time()) * 1000
+            args['tonce'] = int(time.time() * 1000)
             args['signature'] = self._generate_signature(method, path, args)
 
         try:
