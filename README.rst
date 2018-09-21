@@ -5,6 +5,9 @@ Kuna exchange API wrapper
 .. image:: https://img.shields.io/pypi/v/kuna.svg
         :target: https://pypi.python.org/pypi/kuna
 
+.. image:: https://pepy.tech/badge/kuna
+        :target: https://pepy.tech/project/kuna
+
 .. image:: https://travis-ci.org/DmytroLitvinov/kuna.svg?branch=master
         :target: https://travis-ci.org/DmytroLitvinov/kuna
 
