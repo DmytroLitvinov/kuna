@@ -53,7 +53,7 @@ The full documentation is available on `readthedocs <https://kuna.readthedocs.io
 Meta
 ====
 
-Dmytro Litvinov – `@DmytroLitvinov <https://twitter.com/DmytroLitvinov>`_  – litvinov.do.it@gmail.com
+Dmytro Litvinov – `@DmytroLitvinov <https://twitter.com/DmytroLitvinov>`_
 
 Distributed under the MIT license. See `LICENSE <https://github.com/DmytroLitvinov/kuna/blob/master/LICENSE>`_ for more information.
 
