@@ -21,4 +21,4 @@ Kuna exchange API wrapper
      :alt: Python 3
 
 ``kuna`` is a Python package providing access to the `Kuna exchange <https://kuna.io/>`_ server API.
-Original documentation of Kuna exchange API here: https://kuna.io/documents/api
+Original documentation of Kuna exchange API here: https://docs.kuna.io/docs
