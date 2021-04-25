@@ -11,14 +11,6 @@ import warnings
 import hmac
 from typing import Union, List
 
-API_VERSION = '3'
-
-KEYS_NEED_MESSAGE = '''
-    API initialized without public or private key. Only Public API is available.
-    Get keys from "https://kuna.io/settings/api_tokens".
-    '''
-
-DEFAULT_HEADERS = {'accept': 'application/json', 'content-type': 'application/json', 'user-agent': 'python-kuna/0.4.0'}
 
 class APIError(Exception):
     def __init__(self, result):
@@ -39,7 +31,14 @@ class KunaAPI(object):
     - https://docs.kuna.io/docs
     - https://github.com/kunadevelopers/api-docs
     """
-    def __init__(self, public_key=None, private_key=None, disable_warnings=False):
+    API_VERSION = '3'
+    DEFAULT_HEADERS = {'accept': 'application/json', 'content-type': 'application/json', 'user-agent': 'python-kuna/0.4.0'}
+    KEYS_NEED_MESSAGE = '''
+        API initialized without public or private key. Only Public API is available.
+        Get keys from "https://kuna.io/settings/api_tokens".
+        '''
+
+    def __init__(self, public_key: str = None, private_key: str = None, disable_warnings: bool = False):
         self.public_key = public_key
         self.private_key = private_key
         self.endpoint = 'https://api.kuna.io'
@@ -53,9 +52,9 @@ class KunaAPI(object):
     def _check_keys(self, error: bool = True):
         if (self.public_key is None) or (self.private_key is None):
             if error:
-                APIError(KEYS_NEED_MESSAGE)
+                raise APIError(self.KEYS_NEED_MESSAGE)
             else:
-                warnings.warn(KEYS_NEED_MESSAGE)
+                warnings.warn(self.KEYS_NEED_MESSAGE)
 
     def _generate_sign(self, uri: str, body: str, nonce: str) -> str:
         """
@@ -69,7 +68,7 @@ class KunaAPI(object):
         sign = hmac.new(private_key_bin, payload_bin, hashlib.sha384)
         return sign.hexdigest()
 
-    def _request(self, path, args: dict = {}, body: dict = {}, is_user_method=False) -> Union[dict, APIError]:
+    def _request(self, path, args: dict = {}, body: dict = {}, is_user_method=False) -> Union[dict, list, APIError]:
         """
         Fetches the given path in the Kuna API.
         :param path: Api path
@@ -83,7 +82,7 @@ class KunaAPI(object):
             path += '?' + urlencode(args)
         uri = self.prefix + path
         url = self.endpoint + uri
-        headers = DEFAULT_HEADERS.copy()
+        headers = self.DEFAULT_HEADERS.copy()
         body = json.dumps(body)
 
         if is_user_method:
@@ -117,11 +116,11 @@ class KunaAPI(object):
 
     def get_order_book(self, market):
         warnings.warn('Better use: "api.book(market)"', DeprecationWarning)
-        self.book()
+        self.book(market)
 
     def get_trades_history(self, market):
         warnings.warn('Better use: "api.history(market)"', DeprecationWarning)
-        self.history()
+        self.history(market)
 
     def get_user_account_info(self):
         warnings.warn('Better use: "api.auth_me()"', DeprecationWarning)
@@ -377,6 +376,15 @@ class KunaAPI(object):
         body = {'id': id}
         return self._request('/auth/deposit/details', body=body, is_user_method=True)
 
+    def auth_withdraw_prerequest(self, currency: str):
+        """
+        Creates withdraw pre-request
+        :param currency: like 'uah'
+        :return:
+        """
+        body = {'currency': currency}
+        return self._request('/auth/withdraw/prerequest', body=body, is_user_method=True)
+
     def auth_withdraw(self, withdraw_type: str, amount: float, address: str = None, gateway: str = None,
                       fields: dict = None, withdraw_to: str = None, fund_source_id: int = None,
                       payment_id: str = None, allow_blank_memo: bool = None, withdrawall: bool = None):
@@ -527,9 +535,10 @@ class KunaAPI(object):
 
 if __name__ == '__main__':
     from tests.secret import public_key, private_key
-    api = KunaAPI(public_key, private_key)
+    api = KunaAPI()#(public_key, private_key)
+    api.get_user_account_info()
     #res = api.auth_w_order_submit('ethuah', 'limit', 1.0, 600.0)
-    res = api.auth_kuna_codes_redeemed_by_me()
-    print(res)
+    #res = api.auth_kuna_codes_redeemed_by_me()
+    #print(res)
 
 
