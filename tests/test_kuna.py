@@ -45,7 +45,6 @@ class TestKuna(unittest.TestCase):
     def test_get_order_book(self):
         self.api.get_order_book('btcuah')
 
-    @unittest.expectedFailure
     def test_get_trades_history(self):
         self.api.get_trades_history('btcuah')
 
@@ -63,6 +62,10 @@ class TestPublicAPI(unittest.TestCase):
         resp = self.api.timestamp()
         self.assertIsInstance(resp, dict)
 
+    def test_landing_page_statistic(self):
+        resp = self.api.landing_page_statistic()
+        self.assertIsInstance(resp, dict)
+
     def test_currencies(self):
         resp = self.api.currencies()
         self.assertIsInstance(resp, list)
@@ -73,6 +76,10 @@ class TestPublicAPI(unittest.TestCase):
 
     def test_markets(self):
         resp = self.api.markets()
+        self.assertIsInstance(resp, list)
+
+    def test_trades_hist(self):
+        resp = self.api.trades_hist('btcuah')
         self.assertIsInstance(resp, list)
 
     def test_tickers(self):
@@ -153,10 +160,17 @@ class TestMerchantAPI(unittest.TestCase):
     def setUpClass(cls) -> None:
         cls.api = KunaAPI(public_key, private_key)
 
+    def test_deposit_channels(self):
+        resp = self.api.deposit_channels('uah')
+        self.assertIsInstance(resp, list)
+
+    def test_withdraw_channels(self):
+        resp = self.api.withdraw_channels('uah')
+        self.assertIsInstance(resp, list)
+
     @unittest.expectedFailure
     def test_auth_payment_requests_address(self):
         resp = self.api.auth_payment_requests_address('ethuah')
-        print('test_auth_payment_requests_address', resp)
         self.assertIsInstance(resp, dict)
 
     def test_auth_deposit_info(self):

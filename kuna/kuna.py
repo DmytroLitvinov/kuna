@@ -119,8 +119,8 @@ class KunaAPI(object):
         self.book(market)
 
     def get_trades_history(self, market):
-        warnings.warn('Better use: "api.history(market)"', DeprecationWarning)
-        self.history(market)
+        warnings.warn('Better use: "api.trades_hist(market)"', DeprecationWarning)
+        self.trades_hist(market)
 
     def get_user_account_info(self):
         warnings.warn('Better use: "api.auth_me()"', DeprecationWarning)
@@ -147,15 +147,23 @@ class KunaAPI(object):
     # PUBLIC API
     def timestamp(self):
         """
-        # Kuna server time. https://docs.kuna.io/docs/time-on-server
-        :return: https://docs.kuna.io/reference#timestamp
+        # Kuna server time.
+        https://docs.kuna.io/docs/time-on-server
+        :return: https://docs.kuna.io/reference#getv3timestamp
         """
         return self._request('/timestamp')
+
+    def landing_page_statistic(self):
+        """
+        Info about Week and Day trades sum and number of traders
+        :return: https://docs.kuna.io/reference#getv3landingpagestatistic
+        """
+        return self._request('/landing_page_statistic')
 
     def currencies(self):
         """
         List of available currencies. https://docs.kuna.io/docs/available-currencies-list
-        :return: https://docs.kuna.io/reference#currencies
+        :return: https://docs.kuna.io/reference#getv3currencies
         """
         return self._request('/currencies')
 
@@ -174,7 +182,7 @@ class KunaAPI(object):
     def markets(self):
         """
         # List of available markets https://docs.kuna.io/docs/markets
-        :return: https://docs.kuna.io/reference#markets-1
+        :return: https://docs.kuna.io/reference#getv3markets
         """
         return self._request('/markets')
 
@@ -182,7 +190,7 @@ class KunaAPI(object):
         """
         # Last ticker for certain or all markets. https://docs.kuna.io/docs/%D0%BF%D0%BE%D1%81%D0%BB%D0%B5%D0%B4%D0%BD%D0%B8%D0%B5-%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5-%D0%BF%D0%BE-%D1%80%D1%8B%D0%BD%D0%BA%D1%83-%D1%82%D0%B8%D0%BA%D0%B5%D1%80%D1%8B
         :param symbols: 'btcuah' or ['btcuah','kunbtc','ethuah'], by default ALL
-        :return: https://docs.kuna.io/reference#tickers
+        :return: https://docs.kuna.io/reference#getv3tickers
         """
         if isinstance(symbols, str):
             args = {'symbols': symbols}
@@ -196,16 +204,17 @@ class KunaAPI(object):
         """
         Actual Orderbook state for certain market. https://docs.kuna.io/docs/%D0%BE%D1%80%D0%B4%D0%B5%D1%80%D0%B1%D1%83%D0%BA
         :param market: 'btcuah'
-        :return: https://docs.kuna.io/reference#book
+        :return: https://docs.kuna.io/reference#getv3bookmarket
         """
         return self._request(f'/book/{market}')
 
-    def history(self, *args, **kwargs):
+    def trades_hist(self, market: str):
         """
-        Not implemented. https://docs.kuna.io/docs/transaction-history
-        :return:
+        Gets history of trades.
+        https://docs.kuna.io/docs/transaction-history
+        :return: https://docs.kuna.io/reference#getv3tradesmarkethist
         """
-        raise NotImplementedError
+        return self._request(f'/trades/{market}/hist')
 
     def price_changes(self, *args, **kwargs):
         """
@@ -217,7 +226,7 @@ class KunaAPI(object):
     def fees(self):
         """
         Withdraw and deposit methods. Withdrawal fees. https://docs.kuna.io/docs/deposits-withdrowals-fees
-        :return: https://docs.kuna.io/reference#fees
+        :return: https://docs.kuna.io/reference#getv3fees
         """
         return self._request('/fees')
 
@@ -225,7 +234,7 @@ class KunaAPI(object):
     def http_test(self):
         """
         Test HTTP connection to private API
-        :return: https://docs.kuna.io/reference#http_test
+        :return: https://docs.kuna.io/reference#postv3httptest
         """
         return self._request('/http_test', is_user_method=True)
 
@@ -331,6 +340,24 @@ class KunaAPI(object):
         return self._request('/order/cancel/multi', body=body, is_user_method=True)
 
     # MERCHANT API
+    def deposit_channels(self, currency: str):
+        """
+        List of allowed deposit channels
+        :param currency:  like 'btc'
+        :return: https://docs.kuna.io/reference#postv3depositchannels
+        """
+        body = {'currency': currency}
+        return self._request('/deposit_channels', body=body, is_user_method=True)
+
+    def withdraw_channels(self, currency: str):
+        """
+        List of allowed withdraw channels
+        :param currency: like 'eth'
+        :return: https://docs.kuna.io/reference#postv3withdrawchannels
+        """
+        body = {'currency': currency}
+        return self._request('/withdraw_channels', body=body, is_user_method=True)
+
     def auth_payment_requests_address(self, currency: str, blockchain: str = None, callback_url: str = None):
         """
         Generates new address for crypto deposit or error if address exists
@@ -380,7 +407,7 @@ class KunaAPI(object):
         """
         Creates withdraw pre-request
         :param currency: like 'uah'
-        :return:
+        :return: https://docs.kuna.io/reference#postv3withdrawprerequest
         """
         body = {'currency': currency}
         return self._request('/auth/withdraw/prerequest', body=body, is_user_method=True)
@@ -462,7 +489,7 @@ class KunaAPI(object):
         """
         Check kuna code by first 5 symbols of code
         :param code:
-        :return: https://docs.kuna.io/reference#kuna_codes
+        :return: https://docs.kuna.io/reference#getv3kunacodescodecheck
         """
         return self._request(f'/kuna_codes/{code}/check')
 
@@ -539,8 +566,7 @@ if __name__ == '__main__':
     #res = api.auth_w_order_submit('ethuah', 'limit', 1.0, 1.0)
     #order_id = 820371351 #[res[0]]
     #res = api.order_cancel(order_id)
-    for order in api.auth_r_orders():
-        res = api.order_cancel(order[0])
-        print(res)
+    res = api._request('/deposit_channels', body={'currency': 'uah'}, is_user_method=True)
+    print(res)
 
 
