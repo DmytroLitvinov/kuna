@@ -1,19 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import warnings
 import unittest
 from click.testing import CliRunner
 
 from kuna import cli
 from kuna.kuna import KunaAPI
 
+warnings.filterwarnings('ignore')
+
 try:
     from secret import public_key, private_key
 except:
-    print("No key were found. Put variables 'public_key' and 'private_key' into secrets.py")
     public_key, private_key = None, None
-else:
-    print("Public and Private keys are successfully imported")
 
 
 class TestKuna(unittest.TestCase):
@@ -49,6 +49,7 @@ class TestKuna(unittest.TestCase):
     def test_get_trades_history(self):
         self.api.get_trades_history('btcuah')
 
+    @unittest.skipIf((private_key is None) or (public_key is None), "Methods need authentication")
     def test_get_user_account_info(self):
         self.api.get_user_account_info()
 
@@ -56,7 +57,6 @@ class TestKuna(unittest.TestCase):
 class TestPublicAPI(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        """Set up test fixtures, if any."""
         cls.api = KunaAPI(public_key, private_key)
 
     def test_timestamp(self):
@@ -88,60 +88,125 @@ class TestPublicAPI(unittest.TestCase):
         self.assertIsInstance(resp, list)
 
 
-@unittest.skipIf(private_key is None, "Methods need authentication")
+@unittest.skipIf((private_key is None) or (public_key is None), "Methods need authentication")
 class TestPrivateAPI(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        """Set up test fixtures, if any."""
         cls.api = KunaAPI(public_key, private_key)
 
-    def setUp(self) -> None:
-        pass
+    def test_http_test(self):
+        resp = self.api.http_test()
+        self.assertIsInstance(resp, dict)
 
-    def tearDown(self) -> None:
-        pass
+    def test_auth_me(self):
+        resp = self.api.auth_me()
+        self.assertIsInstance(resp, dict)
+
+    def test_auth_r_wallets(self):
+        resp = self.api.auth_r_wallets()
+        self.assertIsInstance(resp, list)
+
+    @unittest.expectedFailure
+    def test_auth_history_trades(self):
+        resp = self.api.auth_history_trades('ethuah')
+        self.assertIsInstance(resp, dict)
 
 
 @unittest.skipIf(private_key is None, "Methods need authentication")
 class TestTradeAPI(unittest.TestCase):
+    order_id = None
+
     @classmethod
     def setUpClass(cls) -> None:
-        """Set up test fixtures, if any."""
         cls.api = KunaAPI(public_key, private_key)
 
-    def setUp(self) -> None:
-        pass
+    def test_auth_r_orders(self):
+        resp = self.api.auth_r_orders()
+        self.assertIsInstance(resp, list)
 
-    def tearDown(self) -> None:
-        pass
+    def test_auth_r_orders_hist(self):
+        resp = self.api.auth_r_orders_hist()
+        self.assertIsInstance(resp, list)
+
+    @unittest.expectedFailure
+    def test_auth_r_order_trades(self):
+        resp = self.api.auth_r_order_trades('ethuah', 1)
+        self.assertIsInstance(resp, list)
+
+    def test_4_auth_w_order_submit(self):
+        resp = self.api.auth_w_order_submit('ethuah', 'limit', amount=1.0, price=1.0)
+        self.__class__.order_id = resp[0]
+        self.assertIsInstance(resp, list)
+
+    def test_5_order_cancel(self):
+        resp = self.api.order_cancel(self.__class__.order_id)
+        self.assertIsInstance(resp, dict)
+
+    def test_6_order_cancel_multi(self):
+        resp = self.api.order_cancel_multi(order_ids=[self.order_id])
+        self.assertIsInstance(resp, dict)
 
 
 @unittest.skipIf(private_key is None, "Methods need authentication")
 class TestMerchantAPI(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        """Set up test fixtures, if any."""
         cls.api = KunaAPI(public_key, private_key)
 
-    def setUp(self) -> None:
-        pass
+    @unittest.expectedFailure
+    def test_auth_payment_requests_address(self):
+        resp = self.api.auth_payment_requests_address('ethuah')
+        print('test_auth_payment_requests_address', resp)
+        self.assertIsInstance(resp, dict)
 
-    def tearDown(self) -> None:
-        pass
+    def test_auth_deposit_info(self):
+        resp = self.api.auth_deposit_info('uah')
+        self.assertIsInstance(resp, dict)
 
-@unittest.skip
+    @unittest.expectedFailure
+    def test_auth_deposit(self):
+        resp = self.api.auth_deposit(currency='uah', amount = 1, payment_service='default', deposit_from = '')
+        self.assertIsInstance(resp, dict)
+
+    @unittest.expectedFailure
+    def test_auth_deposit_details(self):
+        resp = self.api.auth_deposit_details(1)
+        self.assertIsInstance(resp, dict)
+
+    def test_auth_withdraw_prerequest(self):
+        resp = self.api.auth_withdraw_prerequest('uah')
+        self.assertIsInstance(resp, dict)
+
+    @unittest.expectedFailure
+    def test_auth_withdraw(self):
+        resp = self.api.auth_withdraw('uah', 1.0)
+        self.assertIsInstance(resp, dict)
+
+    @unittest.expectedFailure
+    def test_auth_withdraw_details(self):
+        resp = self.api.auth_withdraw_details(1)
+        self.assertIsInstance(resp, dict)
+
+    def test_assets_history(self):
+        resp = self.api.assets_history()
+        self.assertIsInstance(resp, dict)
+
+    @unittest.expectedFailure
+    def test_auth_merchant_deposit(self):
+        resp = self.api.auth_merchant_deposit('uah', 1.0)
+        self.assertIsInstance(resp, dict)
+
+    @unittest.expectedFailure
+    def test_auth_merchant_payment_services(self):
+        resp = self.api.auth_merchant_payment_services('uah')
+        self.assertIsInstance(resp, dict)
+
+
 @unittest.skipIf(private_key is None, "Methods need authentication")
 class TestKunaCodesAPI(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        """Set up test fixtures, if any."""
         cls.api = KunaAPI(public_key, private_key)
-
-    def setUp(self) -> None:
-        pass
-
-    def tearDown(self) -> None:
-        pass
 
     def test_kuna_codes_check(self):
         resp = self.api.kuna_codes_check('857ny')
@@ -170,6 +235,6 @@ class TestKunaCodesAPI(unittest.TestCase):
         resp = self.api.auth_kuna_codes_redeemed_by_me()
         self.assertIsInstance(resp, dict)
 
+
 if __name__ == '__main__':
     unittest.main()
-

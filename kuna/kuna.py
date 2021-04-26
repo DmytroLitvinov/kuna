@@ -425,7 +425,7 @@ class KunaAPI(object):
         :param type: may be 'withdraws' or 'deposits'
         :return:
         """
-        if type.lower() not in ['withdraws', 'deposits']:
+        if type and type.lower() not in ['withdraws', 'deposits']:
             raise APIError("type must by 'withdraws', 'deposits' or None")
         if type:
             path = f'/auth/assets-history/{type}'
@@ -535,10 +535,12 @@ class KunaAPI(object):
 
 if __name__ == '__main__':
     from tests.secret import public_key, private_key
-    api = KunaAPI()#(public_key, private_key)
-    api.get_user_account_info()
-    #res = api.auth_w_order_submit('ethuah', 'limit', 1.0, 600.0)
-    #res = api.auth_kuna_codes_redeemed_by_me()
-    #print(res)
+    api = KunaAPI(public_key, private_key)
+    #res = api.auth_w_order_submit('ethuah', 'limit', 1.0, 1.0)
+    #order_id = 820371351 #[res[0]]
+    #res = api.order_cancel(order_id)
+    for order in api.auth_r_orders():
+        res = api.order_cancel(order[0])
+        print(res)
 
 
