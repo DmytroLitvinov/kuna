@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 
-"""Main module."""
-from urllib.request import Request, urlopen
-from urllib.error import HTTPError
-from urllib.parse import urlencode
 import time
 import json
 import hashlib
 import warnings
 import hmac
+from urllib.request import Request, urlopen
+from urllib.error import HTTPError
+from urllib.parse import urlencode
 from typing import Union, List
 
 
@@ -45,7 +44,6 @@ class KunaAPI(object):
         self.prefix = '/v3'
 
         self._check_keys(error=False)
-
         if disable_warnings:
             warnings.filterwarnings('ignore')
 
@@ -68,7 +66,7 @@ class KunaAPI(object):
         sign = hmac.new(private_key_bin, payload_bin, hashlib.sha384)
         return sign.hexdigest()
 
-    def _request(self, path, args: dict = {}, body: dict = {}, is_user_method=False) -> Union[dict, list, APIError]:
+    def _request(self, path: str, args: dict = {}, body: dict = {}, is_user_method=False) -> Union[dict, list, APIError]:
         """
         Fetches the given path in the Kuna API.
         :param path: Api path
@@ -80,23 +78,19 @@ class KunaAPI(object):
         # If GET params available then add it to path
         if args:
             path += '?' + urlencode(args)
-        uri = self.prefix + path
-        url = self.endpoint + uri
         headers = self.DEFAULT_HEADERS.copy()
         body = json.dumps(body)
 
         if is_user_method:
             self._check_keys(error=True)
-            method = 'POST'
             nonce = str(int(time.time() * 1000))
             headers['kun-nonce'] = nonce
             headers['kun-apikey'] = self.public_key
-            headers['kun-signature'] = self._generate_sign(uri, body, nonce)
-        else:
-            method = 'GET'
+            headers['kun-signature'] = self._generate_sign(self.prefix + path, body, nonce)
 
+        method = 'POST' if is_user_method else 'GET'
+        url = self.endpoint + self.prefix + path
         req = Request(url, body.encode(), headers, method=method)
-
         try:
             with urlopen(req) as resp:
                 json_resp = json.load(resp)
@@ -504,7 +498,7 @@ class KunaAPI(object):
         :param non_refundable_before: time in ISO-8601 "YYYY-MM-DDThh:mm:ss" - strftime('%Y-%m-%dT%H:%M:%S')
         :param comment: public comment
         :param private_comment: private comment
-        :return:
+        :return: https://docs.kuna.io/reference#postv3authkunacodes
         """
         body = {'currency': currency, 'amount': amount, 'recipient': recipient,
                 'non_refundable_before': non_refundable_before, 'comment': comment, 'private_comment': private_comment}
@@ -526,7 +520,7 @@ class KunaAPI(object):
         Activate Kuna code
         https://docs.kuna.io/docs/%D0%BF%D1%80%D0%BE%D0%B2%D0%B5%D1%80%D0%B8%D1%82%D1%8C-kuna-code
         :param code: like "857ny-XXXXX-XXXXX-XXXXX-XXXXX-XXXXX-XXXXX-XXXXX-XXXXX-KUN-KCode"
-        :return:
+        :return: https://docs.kuna.io/reference#putv3authkunacodesredeem
         """
         body = {'code': code}
         return self._request('/auth/kuna_codes/redeem', body=body, is_user_method=True)
@@ -541,7 +535,7 @@ class KunaAPI(object):
         :param order_by: order attribute: 'redeemed_at', 'amount', 'created_at' (default)
         :param order_dir: order direction: 'asc', 'desc' (default)
         :param status: filter by status: 'created', 'processing', 'active', 'redeeming', 'redeemed', 'onhold', 'canceled'
-        :return:
+        :return: https://docs.kuna.io/reference#postv3authkunacodesissuedbyme
         """
         body = {'page': page, 'per_page': per_page, 'order_by': order_by, 'order_dir': order_dir, 'status': status}
         return self._request('/auth/kuna_codes/issued-by-me', body=body, is_user_method=True)
@@ -554,19 +548,11 @@ class KunaAPI(object):
         :param per_page: by default = 10
         :param order_by: order attribute: 'created_at', 'amount','redeemed_at' (default)
         :param order_dir: order direction: 'asc', 'desc' (default)
-        :return:
+        :return: https://docs.kuna.io/reference#postv3authkunacodesredeemedbyme
         """
         body = {'page': page, 'per_page': per_page, 'order_by': order_by, 'order_dir': order_dir}
         return self._request('/auth/kuna_codes/redeemed-by-me', body=body, is_user_method=True)
 
 
 if __name__ == '__main__':
-    from tests.secret import public_key, private_key
-    api = KunaAPI(public_key, private_key)
-    #res = api.auth_w_order_submit('ethuah', 'limit', 1.0, 1.0)
-    #order_id = 820371351 #[res[0]]
-    #res = api.order_cancel(order_id)
-    res = api._request('/deposit_channels', body={'currency': 'uah'}, is_user_method=True)
-    print(res)
-
-
+    pass
