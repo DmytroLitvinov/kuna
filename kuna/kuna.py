@@ -9,6 +9,7 @@ from urllib.request import Request, urlopen
 from urllib.error import HTTPError
 from urllib.parse import urlencode
 from typing import Union, List
+from kuna import __version__
 
 
 class APIError(Exception):
@@ -24,14 +25,14 @@ class APIError(Exception):
         Exception.__init__(self, message)
 
 
-class KunaAPI(object):
+class KunaAPI:
     """
     Documentation sources
     - https://docs.kuna.io/docs
     - https://github.com/kunadevelopers/api-docs
     """
     API_VERSION = '3'
-    DEFAULT_HEADERS = {'accept': 'application/json', 'content-type': 'application/json', 'user-agent': 'python-kuna/0.4.0'}
+    DEFAULT_HEADERS = {'accept': 'application/json', 'content-type': 'application/json', 'user-agent': f'python-kuna/{__version__}'}
     KEYS_NEED_MESSAGE = '''
         API initialized without public or private key. Only Public API is available.
         Get keys from "https://kuna.io/settings/api_tokens".
@@ -552,7 +553,3 @@ class KunaAPI(object):
         """
         body = {'page': page, 'per_page': per_page, 'order_by': order_by, 'order_dir': order_dir}
         return self._request('/auth/kuna_codes/redeemed-by-me', body=body, is_user_method=True)
-
-
-if __name__ == '__main__':
-    pass

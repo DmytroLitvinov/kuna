@@ -179,7 +179,7 @@ class TestMerchantAPI(unittest.TestCase):
 
     @unittest.expectedFailure
     def test_auth_deposit(self):
-        resp = self.api.auth_deposit(currency='uah', amount = 1, payment_service='default', deposit_from = '')
+        resp = self.api.auth_deposit(currency='uah', amount=1, payment_service='default', deposit_from='')
         self.assertIsInstance(resp, dict)
 
     @unittest.expectedFailure

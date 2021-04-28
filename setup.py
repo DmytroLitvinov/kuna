@@ -29,7 +29,7 @@ setup(
     description="Interact with Kuna exchange API",
     long_description=readme + '\n\n' + history,
     author="Dmytro Litvinov",
-    author_email='me@DmytroLitvinov.com',
+    author_email='me@dmytrolitvinov.com',
     url='https://github.com/DmytroLitvinov/kuna',
     packages=find_packages(include=['kuna']),
     entry_points={
@@ -43,12 +43,16 @@ setup(
     zip_safe=False,
     keywords='kuna',
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
-        'Programming Language :: Python :: 2',
+        'Programming Language :: Python',
         'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9'
     ],
     test_suite='tests',
     tests_require=test_requirements,
