@@ -5,7 +5,7 @@ Credits
 Development Lead
 ----------------
 
-* Dmytro Litvinov <litvinov.do.it@gmail.com> `@Dmytro_Litvinov <https://twitter.com/Dmytro_Litvinov>`_
+* Dmytro Litvinov <me@dmytrolitvinov.com> `@DmytroLitvinov <https://twitter.com/DmytroLitvinov>`_
 
 Contributors
 ------------
