@@ -11,3 +11,5 @@ Contributors
 ------------
 
 * Vsevolod Lobko `@sevikkk <https://github.com/sevikkk>`_
+
+* Dmytro Kazanzhy `@kazanzhy <https://github.com/kazanzhy>`_
