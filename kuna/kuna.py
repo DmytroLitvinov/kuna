@@ -16,8 +16,8 @@ class APIError(Exception):
     def __init__(self, result):
         if isinstance(result, HTTPError):
             result = json.load(result)
-        if isinstance(result, dict) and 'messages' in result:
-            message = result.get('messages')
+        if isinstance(result, dict) and "messages" in result:
+            message = result.get("messages")
         elif isinstance(result, str):
             message = result
         else:
@@ -31,22 +31,32 @@ class KunaAPI:
     - https://docs.kuna.io/docs
     - https://github.com/kunadevelopers/api-docs
     """
-    API_VERSION = '3'
-    DEFAULT_HEADERS = {'accept': 'application/json', 'content-type': 'application/json', 'user-agent': f'python-kuna/{__version__}'}
-    KEYS_NEED_MESSAGE = '''
+
+    API_VERSION = "3"
+    DEFAULT_HEADERS = {
+        "accept": "application/json",
+        "content-type": "application/json",
+        "user-agent": f"python-kuna/{__version__}",
+    }
+    KEYS_NEED_MESSAGE = """
         API initialized without public or private key. Only Public API is available.
         Get keys from "https://kuna.io/settings/api_tokens".
-        '''
+        """
 
-    def __init__(self, public_key: str = None, private_key: str = None, disable_warnings: bool = False):
+    def __init__(
+        self,
+        public_key: str = None,
+        private_key: str = None,
+        disable_warnings: bool = False,
+    ):
         self.public_key = public_key
         self.private_key = private_key
-        self.endpoint = 'https://api.kuna.io'
-        self.prefix = '/v3'
+        self.endpoint = "https://api.kuna.io"
+        self.prefix = "/v3"
 
         self._check_keys(error=False)
         if disable_warnings:
-            warnings.filterwarnings('ignore')
+            warnings.filterwarnings("ignore")
 
     def _check_keys(self, error: bool = True):
         if (self.public_key is None) or (self.private_key is None):
@@ -61,13 +71,15 @@ class KunaAPI:
         HEX(HMAC-SHA384(URI + timestamp + JSON(params), secret_key))
         :return:
         """
-        payload = '{}{}{}'.format(uri, nonce, body)
-        payload_bin = payload.encode('ascii')
-        private_key_bin = self.private_key.encode('ascii')
+        payload = "{}{}{}".format(uri, nonce, body)
+        payload_bin = payload.encode("ascii")
+        private_key_bin = self.private_key.encode("ascii")
         sign = hmac.new(private_key_bin, payload_bin, hashlib.sha384)
         return sign.hexdigest()
 
-    def _request(self, path: str, args: dict = {}, body: dict = {}, is_user_method=False) -> Union[dict, list, APIError]:
+    def _request(
+        self, path: str, args: dict = {}, body: dict = {}, is_user_method=False
+    ) -> Union[dict, list, APIError]:
         """
         Fetches the given path in the Kuna API.
         :param path: Api path
@@ -78,18 +90,20 @@ class KunaAPI:
         """
         # If GET params available then add it to path
         if args:
-            path += '?' + urlencode(args)
+            path += "?" + urlencode(args)
         headers = self.DEFAULT_HEADERS.copy()
         body = json.dumps(body)
 
         if is_user_method:
             self._check_keys(error=True)
             nonce = str(int(time.time() * 1000))
-            headers['kun-nonce'] = nonce
-            headers['kun-apikey'] = self.public_key
-            headers['kun-signature'] = self._generate_sign(self.prefix + path, body, nonce)
+            headers["kun-nonce"] = nonce
+            headers["kun-apikey"] = self.public_key
+            headers["kun-signature"] = self._generate_sign(
+                self.prefix + path, body, nonce
+            )
 
-        method = 'POST' if is_user_method else 'GET'
+        method = "POST" if is_user_method else "GET"
         url = self.endpoint + self.prefix + path
         req = Request(url, body.encode(), headers, method=method)
         try:
@@ -127,16 +141,20 @@ class KunaAPI:
 
     def put_order(self, side, amount, symbol, price):
         warnings.warn('Better use: "api.auth_w_order_submit()"', DeprecationWarning)
-        if side.lower() == 'buy': amount = abs(amount)
-        else: amount = -1 * abs(amount)
-        self.auth_w_order_submit(symbol, 'limit', amount, price)
+        if side.lower() == "buy":
+            amount = abs(amount)
+        else:
+            amount = -1 * abs(amount)
+        self.auth_w_order_submit(symbol, "limit", amount, price)
 
     def cancel_order(self, order_id):
         warnings.warn('Better use: "api.order_cancel(order_id)"', DeprecationWarning)
         self.order_cancel(order_id)
 
     def get_trade_history(self, market):
-        warnings.warn('Better use: "api.auth_r_orders_hist(market)"', DeprecationWarning)
+        warnings.warn(
+            'Better use: "api.auth_r_orders_hist(market)"', DeprecationWarning
+        )
         self.auth_r_orders_hist(market)
 
     # PUBLIC API
@@ -146,21 +164,21 @@ class KunaAPI:
         https://docs.kuna.io/docs/time-on-server
         :return: https://docs.kuna.io/reference#getv3timestamp
         """
-        return self._request('/timestamp')
+        return self._request("/timestamp")
 
     def landing_page_statistic(self):
         """
         Info about Week and Day trades sum and number of traders
         :return: https://docs.kuna.io/reference#getv3landingpagestatistic
         """
-        return self._request('/landing_page_statistic')
+        return self._request("/landing_page_statistic")
 
     def currencies(self):
         """
         List of available currencies. https://docs.kuna.io/docs/available-currencies-list
         :return: https://docs.kuna.io/reference#getv3currencies
         """
-        return self._request('/currencies')
+        return self._request("/currencies")
 
     def exchange_rates(self, currency: str = None):
         """
@@ -169,9 +187,9 @@ class KunaAPI:
         :return: https://docs.kuna.io/reference#exchange-rates
         """
         if currency:
-            path = f'/exchange-rates/{currency}'
+            path = f"/exchange-rates/{currency}"
         else:
-            path = '/exchange-rates'
+            path = "/exchange-rates"
         return self._request(path)
 
     def markets(self):
@@ -179,29 +197,31 @@ class KunaAPI:
         # List of available markets https://docs.kuna.io/docs/markets
         :return: https://docs.kuna.io/reference#getv3markets
         """
-        return self._request('/markets')
+        return self._request("/markets")
 
-    def tickers(self, symbols: Union[str,list] = None):
+    def tickers(self, symbols: Union[str, list] = None):
         """
-        # Last ticker for certain or all markets. https://docs.kuna.io/docs/%D0%BF%D0%BE%D1%81%D0%BB%D0%B5%D0%B4%D0%BD%D0%B8%D0%B5-%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5-%D0%BF%D0%BE-%D1%80%D1%8B%D0%BD%D0%BA%D1%83-%D1%82%D0%B8%D0%BA%D0%B5%D1%80%D1%8B
+        Last ticker for certain or all markets.
+        https://docs.kuna.io/docs/%D0%BF%D0%BE%D1%81%D0%BB%D0%B5%D0%B4%D0%BD%D0%B8%D0%B5-%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5-%D0%BF%D0%BE-%D1%80%D1%8B%D0%BD%D0%BA%D1%83-%D1%82%D0%B8%D0%BA%D0%B5%D1%80%D1%8B
         :param symbols: 'btcuah' or ['btcuah','kunbtc','ethuah'], by default ALL
         :return: https://docs.kuna.io/reference#getv3tickers
         """
         if isinstance(symbols, str):
-            args = {'symbols': symbols}
+            args = {"symbols": symbols}
         elif isinstance(symbols, list):
-            args = {'symbols': ','.join(symbols)}
+            args = {"symbols": ",".join(symbols)}
         else:
-            args = {'symbols': 'ALL'}
-        return self._request('/tickers', args=args)
+            args = {"symbols": "ALL"}
+        return self._request("/tickers", args=args)
 
     def book(self, market):
         """
-        Actual Orderbook state for certain market. https://docs.kuna.io/docs/%D0%BE%D1%80%D0%B4%D0%B5%D1%80%D0%B1%D1%83%D0%BA
+        Actual Orderbook state for certain market.
+        https://docs.kuna.io/docs/%D0%BE%D1%80%D0%B4%D0%B5%D1%80%D0%B1%D1%83%D0%BA
         :param market: 'btcuah'
         :return: https://docs.kuna.io/reference#getv3bookmarket
         """
-        return self._request(f'/book/{market}')
+        return self._request(f"/book/{market}")
 
     def trades_hist(self, market: str):
         """
@@ -209,11 +229,12 @@ class KunaAPI:
         https://docs.kuna.io/docs/transaction-history
         :return: https://docs.kuna.io/reference#getv3tradesmarkethist
         """
-        return self._request(f'/trades/{market}/hist')
+        return self._request(f"/trades/{market}/hist")
 
     def price_changes(self, *args, **kwargs):
         """
-        Not implemented. https://docs.kuna.io/docs/%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D0%BA-%D0%B8%D0%B7%D0%BC%D0%B5%D0%BD%D0%B5%D0%BD%D0%B8%D1%8F-%D1%86%D0%B5%D0%BD%D1%8B
+        Not implemented.
+        https://docs.kuna.io/docs/%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D0%BA-%D0%B8%D0%B7%D0%BC%D0%B5%D0%BD%D0%B5%D0%BD%D0%B8%D1%8F-%D1%86%D0%B5%D0%BD%D1%8B  # noqa: 501
         :return:
         """
         raise NotImplementedError
@@ -223,7 +244,7 @@ class KunaAPI:
         Withdraw and deposit methods. Withdrawal fees. https://docs.kuna.io/docs/deposits-withdrowals-fees
         :return: https://docs.kuna.io/reference#getv3fees
         """
-        return self._request('/fees')
+        return self._request("/fees")
 
     # PRIVATE API
     def http_test(self):
@@ -231,32 +252,36 @@ class KunaAPI:
         Test HTTP connection to private API
         :return: https://docs.kuna.io/reference#postv3httptest
         """
-        return self._request('/http_test', is_user_method=True)
+        return self._request("/http_test", is_user_method=True)
 
     def auth_me(self):
         """
-        # Information about the User-account
-        :return: https://docs.kuna.io/docs/%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5-%D0%B0%D0%BA%D0%BA%D0%B0%D1%83%D0%BD%D1%82%D0%B0
+        Information about the User-account
+        https://docs.kuna.io/docs/%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5-%D0%B0%D0%BA%D0%BA%D0%B0%D1%83%D0%BD%D1%82%D0%B0  # noqa: E501
+        :return:
         """
-        return self._request('/auth/me', is_user_method=True)
+        return self._request("/auth/me", is_user_method=True)
 
     def auth_r_wallets(self):
         """
         Account balance in all wallets
         :return: https://docs.kuna.io/docs/account-balance
         """
-        return self._request('/auth/r/wallets', is_user_method=True)
+        return self._request("/auth/r/wallets", is_user_method=True)
 
-    def auth_history_trades(self, market: str, date_from: int = None, date_to: int = None):
+    def auth_history_trades(
+        self, market: str, date_from: int = None, date_to: int = None
+    ):
         """
-        Send history of trade in csv-file to user EMAIL. https://docs.kuna.io/docs/%D0%BF%D0%BE%D0%BB%D1%83%D1%87%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B8%D1%81%D1%82%D0%BE%D1%80%D0%B8%D0%B8-%D1%81%D0%B4%D0%B5%D0%BB%D0%BE%D0%BA-%D0%BF%D0%BE-%D0%BF%D0%BE%D1%87%D1%82%D0%B5
+        Send history of trade in csv-file to user EMAIL.
+        https://docs.kuna.io/docs/%D0%BF%D0%BE%D0%BB%D1%83%D1%87%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B8%D1%81%D1%82%D0%BE%D1%80%D0%B8%D0%B8-%D1%81%D0%B4%D0%B5%D0%BB%D0%BE%D0%BA-%D0%BF%D0%BE-%D0%BF%D0%BE%D1%87%D1%82%D0%B5  # noqa: E501
         :param market: 'ethuah'
         :param date_from: UNIX timestamp. Default: year ago (now - 60*60*24*365)
         :param date_to: UNIX timestamp. Default: now
         :return:
         """
-        body = {'market': market, 'date_from': date_from, 'date_to': date_to}
-        return self._request('/auth/history/trades', body=body, is_user_method=True)
+        body = {"market": market, "date_from": date_from, "date_to": date_to}
+        return self._request("/auth/history/trades", body=body, is_user_method=True)
 
     # TRADE API
     def auth_r_orders(self, market: str = None):
@@ -267,9 +292,9 @@ class KunaAPI:
         :return:
         """
         if market:
-            path = f'/auth/r/orders/{market}'
+            path = f"/auth/r/orders/{market}"
         else:
-            path = '/auth/r/orders'
+            path = "/auth/r/orders"
         return self._request(path, is_user_method=True)
 
     def auth_r_orders_hist(self, market: str = None):
@@ -280,9 +305,9 @@ class KunaAPI:
         :return:
         """
         if market:
-            path = f'/auth/r/orders/{market}/hist'
+            path = f"/auth/r/orders/{market}/hist"
         else:
-            path = '/auth/r/orders/hist'
+            path = "/auth/r/orders/hist"
         return self._request(path, is_user_method=True)
 
     def auth_r_order_trades(self, market: str, order_id: int):
@@ -293,9 +318,18 @@ class KunaAPI:
         :param order_id: like 10000000
         :return:
         """
-        return self._request(f'/auth/r/order/{market}:{order_id}/trades', is_user_method=True)
+        return self._request(
+            f"/auth/r/order/{market}:{order_id}/trades", is_user_method=True
+        )
 
-    def auth_w_order_submit(self, symbol: str, type: str, amount: float, price: float = None, stop_price: float = None):
+    def auth_w_order_submit(
+        self,
+        symbol: str,
+        type: str,
+        amount: float,
+        price: float = None,
+        stop_price: float = None,
+    ):
         """
         Creates order
         https://docs.kuna.io/docs/%D1%81%D0%BE%D0%B7%D0%B4%D0%B0%D1%82%D1%8C-%D0%BE%D1%80%D0%B4%D0%B5%D1%80-1
@@ -306,13 +340,19 @@ class KunaAPI:
         :param stop_price: price when activates 'limit_stop_loss' type order. If None then price
         :return:
         """
-        available_types = ('limit', 'market', 'market_by_quote', 'limit_stop_loss')
+        available_types = ("limit", "market", "market_by_quote", "limit_stop_loss")
         if type.lower() not in available_types:
             raise APIError(f'"{type}" is not one of available types {available_types}')
 
-        body = {'symbol': symbol, 'type': type, 'amount': amount, 'price': price, 'stop_price': stop_price}
+        body = {
+            "symbol": symbol,
+            "type": type,
+            "amount": amount,
+            "price": price,
+            "stop_price": stop_price,
+        }
 
-        return self._request('/auth/w/order/submit', body=body, is_user_method=True)
+        return self._request("/auth/w/order/submit", body=body, is_user_method=True)
 
     def order_cancel(self, order_id: int):
         """
@@ -321,8 +361,8 @@ class KunaAPI:
         :param order_id:
         :return: https://docs.kuna.io/reference#postv3ordercancel
         """
-        body = {'order_id': order_id}
-        return self._request('/order/cancel', body=body, is_user_method=True)
+        body = {"order_id": order_id}
+        return self._request("/order/cancel", body=body, is_user_method=True)
 
     def order_cancel_multi(self, order_ids: List[int]):
         """
@@ -331,8 +371,8 @@ class KunaAPI:
         :param order_ids:
         :return: https://docs.kuna.io/reference#postv3ordercancelmulti
         """
-        body = {'order_ids': order_ids}
-        return self._request('/order/cancel/multi', body=body, is_user_method=True)
+        body = {"order_ids": order_ids}
+        return self._request("/order/cancel/multi", body=body, is_user_method=True)
 
     # MERCHANT API
     def deposit_channels(self, currency: str):
@@ -341,8 +381,8 @@ class KunaAPI:
         :param currency:  like 'btc'
         :return: https://docs.kuna.io/reference#postv3depositchannels
         """
-        body = {'currency': currency}
-        return self._request('/deposit_channels', body=body, is_user_method=True)
+        body = {"currency": currency}
+        return self._request("/deposit_channels", body=body, is_user_method=True)
 
     def withdraw_channels(self, currency: str):
         """
@@ -350,10 +390,12 @@ class KunaAPI:
         :param currency: like 'eth'
         :return: https://docs.kuna.io/reference#postv3withdrawchannels
         """
-        body = {'currency': currency}
-        return self._request('/withdraw_channels', body=body, is_user_method=True)
+        body = {"currency": currency}
+        return self._request("/withdraw_channels", body=body, is_user_method=True)
 
-    def auth_payment_requests_address(self, currency: str, blockchain: str = None, callback_url: str = None):
+    def auth_payment_requests_address(
+        self, currency: str, blockchain: str = None, callback_url: str = None
+    ):
         """
         Generates new address for crypto deposit or error if address exists
         https://docs.kuna.io/docs/generate-new-address-for-deposit
@@ -362,8 +404,14 @@ class KunaAPI:
         :param callback_url: to this URL will be send POST-request after successful deposit
         :return:
         """
-        body = {'currency': currency, 'blockchain': blockchain, 'callback_url': callback_url}
-        return self._request('/auth/payment_requests/address', body=body, is_user_method=True)
+        body = {
+            "currency": currency,
+            "blockchain": blockchain,
+            "callback_url": callback_url,
+        }
+        return self._request(
+            "/auth/payment_requests/address", body=body, is_user_method=True
+        )
 
     def auth_deposit_info(self, currency: str):
         """
@@ -372,10 +420,12 @@ class KunaAPI:
         :param currency: like 'eth'
         :return:
         """
-        body = {'currency': currency}
-        return self._request('/auth/deposit/info', body=body, is_user_method=True)
+        body = {"currency": currency}
+        return self._request("/auth/deposit/info", body=body, is_user_method=True)
 
-    def auth_deposit(self, currency: str, amount: float, payment_service: str, deposit_from: str):
+    def auth_deposit(
+        self, currency: str, amount: float, payment_service: str, deposit_from: str
+    ):
         """
         Deposit fiat money
         https://docs.kuna.io/docs/%D0%BF%D0%BE%D0%BF%D0%BE%D0%BB%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%84%D0%B8%D0%B0%D1%82%D0%BE%D0%BC-%D1%81-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5%D0%BC-%D1%81%D1%82%D0%B0%D0%BD%D0%B4%D0%B0%D1%80%D1%82%D0%BD%D0%BE%D0%B3%D0%BE-%D0%BF%D0%BB%D0%B0%D1%82%D0%B5%D0%B6%D0%BD%D0%BE%D0%B3%D0%BE-%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81%D0%B0
@@ -385,8 +435,13 @@ class KunaAPI:
         :param deposit_from:
         :return:
         """
-        body = {'currency': currency, 'amount': amount, 'payment_service': payment_service, 'deposit_from': deposit_from}
-        return self._request('/auth/deposit', body=body, is_user_method=True)
+        body = {
+            "currency": currency,
+            "amount": amount,
+            "payment_service": payment_service,
+            "deposit_from": deposit_from,
+        }
+        return self._request("/auth/deposit", body=body, is_user_method=True)
 
     def auth_deposit_details(self, id: int):
         """
@@ -395,8 +450,8 @@ class KunaAPI:
         :param id: like 581303
         :return:
         """
-        body = {'id': id}
-        return self._request('/auth/deposit/details', body=body, is_user_method=True)
+        body = {"id": id}
+        return self._request("/auth/deposit/details", body=body, is_user_method=True)
 
     def auth_withdraw_prerequest(self, currency: str):
         """
@@ -404,12 +459,24 @@ class KunaAPI:
         :param currency: like 'uah'
         :return: https://docs.kuna.io/reference#postv3withdrawprerequest
         """
-        body = {'currency': currency}
-        return self._request('/auth/withdraw/prerequest', body=body, is_user_method=True)
+        body = {"currency": currency}
+        return self._request(
+            "/auth/withdraw/prerequest", body=body, is_user_method=True
+        )
 
-    def auth_withdraw(self, withdraw_type: str, amount: float, address: str = None, gateway: str = None,
-                      fields: dict = None, withdraw_to: str = None, fund_source_id: int = None,
-                      payment_id: str = None, allow_blank_memo: bool = None, withdrawall: bool = None):
+    def auth_withdraw(
+        self,
+        withdraw_type: str,
+        amount: float,
+        address: str = None,
+        gateway: str = None,
+        fields: dict = None,
+        withdraw_to: str = None,
+        fund_source_id: int = None,
+        payment_id: str = None,
+        allow_blank_memo: bool = None,
+        withdrawall: bool = None,
+    ):
         """
         Create request for withdrawal
         https://docs.kuna.io/docs/create-request-for-withdrawal
@@ -425,10 +492,19 @@ class KunaAPI:
         :param withdrawall: if True then amount includes fee
         :return:
         """
-        body = {'withdraw_type': withdraw_type,'amount': amount, 'address': address, 'gateway': gateway,
-                'fields': fields, 'withdraw_to': withdraw_to, 'fund_source_id': fund_source_id,
-                'payment_id': payment_id, 'allow_blank_memo': allow_blank_memo, 'withdrawall': withdrawall}
-        return self._request('/auth/withdraw', body=body, is_user_method=True)
+        body = {
+            "withdraw_type": withdraw_type,
+            "amount": amount,
+            "address": address,
+            "gateway": gateway,
+            "fields": fields,
+            "withdraw_to": withdraw_to,
+            "fund_source_id": fund_source_id,
+            "payment_id": payment_id,
+            "allow_blank_memo": allow_blank_memo,
+            "withdrawall": withdrawall,
+        }
+        return self._request("/auth/withdraw", body=body, is_user_method=True)
 
     def auth_withdraw_details(self, id: int):
         """
@@ -437,8 +513,8 @@ class KunaAPI:
         :param id:
         :return:
         """
-        body = {'id': id}
-        return self._request('/auth/withdraw/details', body=body, is_user_method=True)
+        body = {"id": id}
+        return self._request("/auth/withdraw/details", body=body, is_user_method=True)
 
     def assets_history(self, type: str = None):
         """
@@ -447,15 +523,21 @@ class KunaAPI:
         :param type: may be 'withdraws' or 'deposits'
         :return:
         """
-        if type and type.lower() not in ['withdraws', 'deposits']:
+        if type and type.lower() not in ["withdraws", "deposits"]:
             raise APIError("type must by 'withdraws', 'deposits' or None")
         if type:
-            path = f'/auth/assets-history/{type}'
+            path = f"/auth/assets-history/{type}"
         else:
-            path = '/auth/assets-history'
+            path = "/auth/assets-history"
         return self._request(path, is_user_method=True)
 
-    def auth_merchant_deposit(self, currency: str, amount: float, return_url: str = None, callback_url: str = None):
+    def auth_merchant_deposit(
+        self,
+        currency: str,
+        amount: float,
+        return_url: str = None,
+        callback_url: str = None,
+    ):
         """
         Deposit using default payment service
         https://docs.kuna.io/docs/deposits-using-default-payment-service
@@ -465,10 +547,15 @@ class KunaAPI:
         :param callback_url:
         :return:
         """
-        body = {'currency': currency, 'amount': amount, 'payment_service': 'default',
-                'return_url': return_url, 'callback_url': callback_url}
+        body = {
+            "currency": currency,
+            "amount": amount,
+            "payment_service": "default",
+            "return_url": return_url,
+            "callback_url": callback_url,
+        }
 
-        return self._request('/auth/merchant/deposit', body=body, is_user_method=True)
+        return self._request("/auth/merchant/deposit", body=body, is_user_method=True)
 
     def auth_merchant_payment_services(self, currency: str):
         """
@@ -476,8 +563,10 @@ class KunaAPI:
         :param currency: like 'uah'
         :return:
         """
-        body = {'currency': currency}
-        return self._request('/auth/merchant/payment_services', body=body, is_user_method=True)
+        body = {"currency": currency}
+        return self._request(
+            "/auth/merchant/payment_services", body=body, is_user_method=True
+        )
 
     # KUNA CODES
     def kuna_codes_check(self, code: str):
@@ -486,10 +575,17 @@ class KunaAPI:
         :param code:
         :return: https://docs.kuna.io/reference#getv3kunacodescodecheck
         """
-        return self._request(f'/kuna_codes/{code}/check')
+        return self._request(f"/kuna_codes/{code}/check")
 
-    def kuna_codes(self, currency: str, amount: float, recipient: str = None, non_refundable_before: str = None,
-                   comment: str = None, private_comment: str = None):
+    def kuna_codes(
+        self,
+        currency: str,
+        amount: float,
+        recipient: str = None,
+        non_refundable_before: str = None,
+        comment: str = None,
+        private_comment: str = None,
+    ):
         """
         Create Kuna code
         https://docs.kuna.io/docs/%D1%81%D0%BE%D0%B7%D0%B4%D0%B0%D1%82%D1%8C-kuna-code
@@ -501,10 +597,16 @@ class KunaAPI:
         :param private_comment: private comment
         :return: https://docs.kuna.io/reference#postv3authkunacodes
         """
-        body = {'currency': currency, 'amount': amount, 'recipient': recipient,
-                'non_refundable_before': non_refundable_before, 'comment': comment, 'private_comment': private_comment}
+        body = {
+            "currency": currency,
+            "amount": amount,
+            "recipient": recipient,
+            "non_refundable_before": non_refundable_before,
+            "comment": comment,
+            "private_comment": private_comment,
+        }
 
-        return self._request('/auth/kuna_codes', body=body, is_user_method=True)
+        return self._request("/auth/kuna_codes", body=body, is_user_method=True)
 
     def auth_kuna_codes_details(self, id: int):
         """
@@ -513,8 +615,8 @@ class KunaAPI:
         :param id:
         :return:
         """
-        body = {'id': id}
-        return self._request('/auth/kuna_codes/details', body=body, is_user_method=True)
+        body = {"id": id}
+        return self._request("/auth/kuna_codes/details", body=body, is_user_method=True)
 
     def auth_kuna_codes_redeem(self, code):
         """
@@ -523,11 +625,17 @@ class KunaAPI:
         :param code: like "857ny-XXXXX-XXXXX-XXXXX-XXXXX-XXXXX-XXXXX-XXXXX-XXXXX-KUN-KCode"
         :return: https://docs.kuna.io/reference#putv3authkunacodesredeem
         """
-        body = {'code': code}
-        return self._request('/auth/kuna_codes/redeem', body=body, is_user_method=True)
+        body = {"code": code}
+        return self._request("/auth/kuna_codes/redeem", body=body, is_user_method=True)
 
-    def auth_kuna_codes_issued_by_me(self, page: int = None, per_page: int = None,
-                                     order_by: str = None, order_dir: str = None, status: List[str] = None):
+    def auth_kuna_codes_issued_by_me(
+        self,
+        page: int = None,
+        per_page: int = None,
+        order_by: str = None,
+        order_dir: str = None,
+        status: List[str] = None,
+    ):
         """
         All kuna codes issued by user
         https://docs.kuna.io/docs/%D1%81%D0%BF%D0%B8%D1%81%D0%BE%D0%BA-%D0%B2%D1%8B%D0%BF%D1%83%D1%89%D0%B5%D0%BD%D0%BD%D1%8B%D1%85-%D0%BA%D0%BE%D0%B4%D0%BE%D0%B2
@@ -535,13 +643,28 @@ class KunaAPI:
         :param per_page: by default = 10
         :param order_by: order attribute: 'redeemed_at', 'amount', 'created_at' (default)
         :param order_dir: order direction: 'asc', 'desc' (default)
-        :param status: filter by status: 'created', 'processing', 'active', 'redeeming', 'redeemed', 'onhold', 'canceled'
+        :param status: filter by status: 'created', 'processing', 'active', 'redeeming', 'redeemed', 'onhold',
+                       'canceled'
         :return: https://docs.kuna.io/reference#postv3authkunacodesissuedbyme
         """
-        body = {'page': page, 'per_page': per_page, 'order_by': order_by, 'order_dir': order_dir, 'status': status}
-        return self._request('/auth/kuna_codes/issued-by-me', body=body, is_user_method=True)
+        body = {
+            "page": page,
+            "per_page": per_page,
+            "order_by": order_by,
+            "order_dir": order_dir,
+            "status": status,
+        }
+        return self._request(
+            "/auth/kuna_codes/issued-by-me", body=body, is_user_method=True
+        )
 
-    def auth_kuna_codes_redeemed_by_me(self, page: int = None, per_page: int = None, order_by: str = None, order_dir: str = None):
+    def auth_kuna_codes_redeemed_by_me(
+        self,
+        page: int = None,
+        per_page: int = None,
+        order_by: str = None,
+        order_dir: str = None,
+    ):
         """
         All kuna codes redeemed by user
         https://docs.kuna.io/docs/%D1%81%D0%BF%D0%B8%D1%81%D0%BE%D0%BA-%D0%B0%D0%BA%D1%82%D0%B8%D0%B2%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D1%85-%D0%BA%D0%BE%D0%B4%D0%BE%D0%B2
@@ -551,5 +674,12 @@ class KunaAPI:
         :param order_dir: order direction: 'asc', 'desc' (default)
         :return: https://docs.kuna.io/reference#postv3authkunacodesredeemedbyme
         """
-        body = {'page': page, 'per_page': per_page, 'order_by': order_by, 'order_dir': order_dir}
-        return self._request('/auth/kuna_codes/redeemed-by-me', body=body, is_user_method=True)
+        body = {
+            "page": page,
+            "per_page": per_page,
+            "order_by": order_by,
+            "order_dir": order_dir,
+        }
+        return self._request(
+            "/auth/kuna_codes/redeemed-by-me", body=body, is_user_method=True
+        )
