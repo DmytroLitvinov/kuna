@@ -30,13 +30,6 @@ Original documentation of Kuna exchange API here: https://docs.kuna.io/docs
 Installation
 ============
 
-Requirements
-------------
-
-kuna depends on:
-
-* `python-requests <http://docs.python-requests.org/en/latest/>`_
-
 Install with pip
 ----------------
 
