@@ -1,6 +1,13 @@
 History
 =======
 
+0.4.0 (2021-04-28)
+------------------
+
+* Add support for API v3
+* Drop support for Python < 3.6
+* Add deprecation warning for API v2
+
 
 0.3.3 (2018-11-08)
 ------------------
