@@ -5,4 +5,4 @@ from .kuna import KunaAPI, APIError
 
 __author__ = """Dmytro Litvinov"""
 __email__ = "me@dmytrolitvinov.com"
-__version__ = "0.4.0"
+__version__ = "0.4.1"
