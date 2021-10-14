@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from .kuna import KunaAPI, APIError
 
 """Top-level package for Kuna API wrapper."""
 
