@@ -1,6 +1,12 @@
 History
 =======
 
+0.4.1 (2021-10-14)
+------------------
+
+* Fix import [#80](https://github.com/DmytroLitvinov/kuna/issues/80)
+
+
 0.4.0 (2021-04-28)
 ------------------
 
