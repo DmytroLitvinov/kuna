@@ -1,6 +1,13 @@
 History
 =======
 
+0.4.2 (2021-12-28)
+------------------
+
+* Fix import [#100](https://github.com/DmytroLitvinov/kuna/issues/100)
+* Requires Python>=3.6
+
+
 0.4.1 (2021-10-14)
 ------------------
 
