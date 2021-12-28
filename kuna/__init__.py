@@ -4,6 +4,6 @@
 
 __author__ = """Dmytro Litvinov"""
 __email__ = "me@dmytrolitvinov.com"
-__version__ = "0.4.1"
+__version__ = "0.4.2"
 
 from .kuna import KunaAPI, APIError  # noqa: F401
