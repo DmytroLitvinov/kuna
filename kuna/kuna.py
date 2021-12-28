@@ -9,7 +9,7 @@ from urllib.request import Request, urlopen
 from urllib.error import HTTPError
 from urllib.parse import urlencode
 from typing import Union, List
-from kuna import __version__
+from .version import __version__
 
 
 class APIError(Exception):
