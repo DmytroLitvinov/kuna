@@ -15,13 +15,6 @@ Kuna exchange API wrapper
         :target: https://kuna.readthedocs.io/en/latest/?badge=stable
         :alt: Documentation Status
 
-.. image:: https://pyup.io/repos/github/DmytroLitvinov/kuna/shield.svg
-     :target: https://pyup.io/repos/github/DmytroLitvinov/kuna/
-     :alt: Updates
-
-.. image:: https://pyup.io/repos/github/DmytroLitvinov/kuna/python-3-shield.svg
-     :target: https://pyup.io/repos/github/DmytroLitvinov/kuna/
-     :alt: Python 3
 
 ``kuna`` is a Python package providing access to the `Kuna exchange <https://kuna.io/>`_ server API.
 Original documentation of Kuna exchange API here: https://docs.kuna.io/docs
