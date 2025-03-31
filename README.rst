@@ -1,6 +1,9 @@
 Kuna exchange API wrapper
 =========================
 
+    This repo is based on V3. Current supported on 31.03.2025 - V4. 
+    Currently, no planned actions on migrating to V4 so this repository is archived.
+
 
 .. image:: https://img.shields.io/pypi/v/kuna.svg
         :target: https://pypi.python.org/pypi/kuna
